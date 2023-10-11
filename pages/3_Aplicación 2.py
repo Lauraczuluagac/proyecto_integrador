@@ -42,5 +42,6 @@ tk.Button(ventana, text='Clear', padx=20, pady=20, command=lambda: entrada.delet
 # Mostrar el resultado
 tk.Label(ventana, textvariable=resultado, padx=20, pady=20).grid(row=row_val + 1, columnspan=4)
 
+
 ventana.mainloop()
 st.header("Aplicacón 2")
