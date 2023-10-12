@@ -1,51 +1,73 @@
 import streamlit as st
-import tkinter as tk
 
+import pygame
+import random
 
-def calcular():
-    try:
-        resultado.set(eval(entrada.get()))
-    except:
-        resultado.set("Error")
+# Inicializa Pygame
+pygame.init()
 
+# Configura la pantalla
+width, height = 800, 600
+screen = pygame.display.set_mode((width, height))
+pygame.display.set_caption("Caza de Patos")
 
-# Crear una ventana principal
-ventana = tk.Tk()
-ventana.title("Calculadora")
+# Define los colores
+white = (255, 255, 255)
 
-# Variable para mostrar el resultado
-resultado = tk.StringVar()
+class Duck:
+    def __init__(self):
+        self.image = pygame.image.load("pato.webp")
+        self.rect = self.image.get_rect()
+        self.rect.x = random.randint(50, width - 50)
+        self.rect.y = random.randint(50, height - 50)
+        self.speed = 1
 
-# Crear una entrada de texto
-entrada = tk.Entry(ventana, width=30)
-entrada.grid(row=0, column=0, columnspan=4)
+    def move(self):
+        self.rect.y += self.speed
 
-# Crear botones para números y operaciones
-botones = [
-    '7', '8', '9', '/',
-    '4', '5', '6', '*',
-    '1', '2', '3', '-',
-    '0', '.', '=', '+'
-]
+    def draw(self):
+        screen.blit(self.image, self.rect)
 
-row_val = 1
-col_val = 0
+# Carga la imagen del pato
+duck = Duck()
 
-for button in botones:
-    tk.Button(ventana, text=button, padx=20, pady=20, command=lambda b=button: entrada.insert(
-        'end', b) if b != '=' else calcular()).grid(row=row_val, column=col_val)
-    col_val += 1
-if col_val > 3:
-    col_val = 0
-    row_val += 1
+# Inicializa el reloj
+clock = pygame.time.Clock()
 
-# Botón Clear
-tk.Button(ventana, text='Clear', padx=20, pady=20, command=lambda: entrada.delete(
-    0, 'end')).grid(row=row_val, column=col_val)
+# Variables de juego
+score = 0
+running = True
 
-# Mostrar el resultado
-tk.Label(ventana, textvariable=resultado, padx=20,
-         pady=20).grid(row=row_val + 1, columnspan=4)
+while running:
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            running = False
 
-ventana.mainloop()
+    # Control de teclas
+    keys = pygame.key.get_pressed()
+    if keys[pygame.K_LEFT]:
+        duck.rect.x -= duck.speed
+    if keys[pygame.K_RIGHT]:
+        duck.rect.x += duck.speed
+    if keys[pygame.K_UP]:
+        duck.rect.y -= duck.speed
+    if keys[pygame.K_DOWN]:
+        duck.rect.y += duck.speed
+
+    # Mueve el pato hacia abajo
+    duck.move()
+
+    # Dibuja la pantalla y el pato
+    screen.fill(white)
+    duck.draw()
+
+    # Actualiza la pantalla
+    pygame.display.update()
+
+    # Limita la velocidad del juego
+    clock.tick(60)
+
+# Cierra Pygame
+pygame.quit()
+
 st.header("Aplicacón 2")
